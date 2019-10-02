@@ -15,23 +15,28 @@ npm run devStart
 ### GET
 
 ```
-{books{
-	title
-	language
-	}}
+{
+	books{
+		title
+		language
+	}
+}
 
-	```
+```
+
 Get Authors:
 
 ```
-{authors{
-	name
-	id
+{
+	authors{
+		name
+		id
 	}
 }
 	
-	```
-### Mutation
+```
+
+### Mutations
 
 Add Book:
 ```
