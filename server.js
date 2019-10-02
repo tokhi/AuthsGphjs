@@ -20,61 +20,37 @@ const authors = [
 const books = [
   {
     "author_id": 1,
-    "country": "Nigeria",
-    "imageLink": "images/things-fall-apart.jpg",
     "language": "English",
-    "link": "https://en.wikipedia.org/wiki/Things_Fall_Apart\n",
-    "pages": 209,
     "title": "Things Fall Apart",
     "year": 1958
   },
   {
     "author_id": 3,
-    "country": "Italy",
-    "imageLink": "images/the-decameron.jpg",
     "language": "Italian",
-    "link": "https://en.wikipedia.org/wiki/The_Decameron\n",
-    "pages": 1024,
     "title": "The Decameron",
     "year": 1351
   },
   {
     "author_id": 2,
-    "country": "Denmark",
-    "imageLink": "images/fairy-tales.jpg",
     "language": "Danish",
-    "link": "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.\n",
-    "pages": 784,
     "title": "Fairy tales",
     "year": 1836
   },
   {
     "author_id": 3,
-    "country": "Italy",
-    "imageLink": "images/the-divine-comedy.jpg",
     "language": "Italian",
-    "link": "https://en.wikipedia.org/wiki/Divine_Comedy\n",
-    "pages": 928,
     "title": "The Divine Comedy",
     "year": 1315
   },
   {
     "author_id": 1,
-    "country": "Sumer and Akkadian Empire",
-    "imageLink": "images/the-epic-of-gilgamesh.jpg",
     "language": "Akkadian",
-    "link": "https://en.wikipedia.org/wiki/Epic_of_Gilgamesh\n",
-    "pages": 160,
     "title": "The Epic Of Gilgamesh",
     "year": -1700
   },
   {
     "author_id": 2,
-    "country": "Achaemenid Empire",
-    "imageLink": "images/the-book-of-job.jpg",
     "language": "Hebrew",
-    "link": "https://en.wikipedia.org/wiki/Book_of_Job\n",
-    "pages": 176,
     "title": "The Book Of Job",
     "year": -600
   }]
@@ -86,6 +62,7 @@ const BookType = new GraphQLObjectType({
 	fields: () => ({
 		year: {type: GraphQLNonNull(GraphQLInt)},
 		title: {type: GraphQLNonNull(GraphQLString)},
+		language: {type: GraphQLNonNull(GraphQLString)},
 		author_id: {type: GraphQLNonNull(GraphQLInt)},
 		author: {
 			type: AuthorType,
@@ -116,6 +93,14 @@ const RootQueryType = new GraphQLObjectType({
 	name: 'Query',
 	description: 'Root Query',
 	fields: () => ({
+		book: {
+			type: BookType,
+			description: 'A single book',
+			args: {
+				language: {type: GraphQLString}
+			},
+			resolve: (parent, args) => books.find(book => book.language === args.language)
+		},
 		books: {
 			type: new GraphQLList(BookType),
 			description: 'List of All Books',
@@ -125,13 +110,55 @@ const RootQueryType = new GraphQLObjectType({
 			type: new GraphQLList(AuthorType),
 			description: 'List of All Authors',
 			resolve: () => authors
+		},
+		author: {
+			type: AuthorType,
+			description: 'Single author',
+			args: {
+				id: {type: GraphQLInt}
+			},
+			resolve: (parent, args) => authors.find(author => author.id === args.id)
 		}
 	})
 })
 
 
+const RootMutationType = new GraphQLObjectType({
+	name: 'Mutation',
+	description: 'Root Mutaiton',
+	fields: () => ({
+		addBook: {
+			type: BookType,
+			description: 'Add a book',
+			args: {
+				title: {type: GraphQLString},
+				author_id: {type: GraphQLInt},
+				language: {type: GraphQLString}
+			},
+			resolve: (parent, args) => {
+				const book = {title: args.title, author_id: args.author_id, language: args.language}
+				books.push(book)
+				return book
+			}
+		},
+		addAuthor: {
+			type: AuthorType,
+			description: 'Add a author',
+			args: {
+				name: {type: GraphQLString}
+			},
+			resolve: (parent, args) => {
+				const author = {id: authors.length +1, name: args.name}
+				authors.push(author)
+				return author
+			}
+		}
+	})
+})
+
 const schema = new GraphQLSchema({
-	query: RootQueryType
+	query: RootQueryType,
+	mutation: RootMutationType
 })
 
 app.use('/graphql', expressGraphQL({
