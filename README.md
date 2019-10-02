@@ -12,6 +12,8 @@ npm install
 npm run devStart
 ```
 
+http://localhost:5000/graphql?
+
 ### GET
 
 ```
