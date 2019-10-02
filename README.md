@@ -16,10 +16,10 @@ npm run devStart
 
 ```
 {
-	books{
-		title
-		language
-	}
+  books{
+    title
+	language
+  }
 }
 
 ```
@@ -28,10 +28,10 @@ Get Authors:
 
 ```
 {
-	authors{
-		name
-		id
-	}
+  authors{
+    name
+	id
+  }
 }
 	
 ```
