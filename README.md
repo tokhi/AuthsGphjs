@@ -1,4 +1,5 @@
 ## Setup
+Graphql demo with GET and mutations.
 
 ```
 npm install
