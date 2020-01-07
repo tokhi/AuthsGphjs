@@ -1,6 +1,7 @@
-## Setup
+## Graphql Demo in Node.js
 Graphql demo with GET and mutations.
 
+## Setup
 ```
 npm install
 # RUN
